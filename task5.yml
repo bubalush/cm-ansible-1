@@ -1,0 +1,12 @@
+- name: task5 
+  hosts: all  
+
+  tasks:     
+     - debug: 
+        msg: "Number of CPUs - {{ansible_processor_cores}}"    
+     - debug: 
+        msg: "Hostname - {{ansible_hostname}}"    
+     - debug: 
+        msg: "Host IP - {{ansible_default_ipv4.address}}"    
+     - debug: 
+        msg: "Total RAM - {{ansible_memory_mb.real.total}}"

@@ -28,7 +28,7 @@
 ## 5. Test ansible connectivity to the VM with ad-hoc command: 
 
 
-### Find out host details:
+### Find out host details ([task5.yml](task5.yml)):
 
 ### - Number of CPUs
 
@@ -39,6 +39,8 @@
 ### - Total RAM
 
 <img src="pictures/2.png">
+
+<img src="pictures/6.png">
 
 ## 6. Develop a playbook (name: [tomcat_provision.yml](tomcat_provision.yml)) which is supposed to run against any host (specified in inventory)
 ### Use following modules (at least):
