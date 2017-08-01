@@ -1,0 +1,104 @@
+- name: Provisioning tomcat  
+  hosts: tomcat
+
+  vars:
+    tomcat_version: 8
+    tomcat_subversion: 0.45
+    java_version: 1.8.0
+    
+  become: True
+  become_method: sudo 
+
+  tasks:
+
+  - name: be sure Java is install
+    yum:  
+      name: java-{{java_version}}-openjdk-devel.x86_64  
+      state: present
+
+  - name: be sure group "tomcat" exist
+    group: 
+     name: tomcat_as_group
+     state: present
+
+  - name: be sure user "tomcat" exist
+    user: 
+     name: tomcat_as
+     group: tomcat_as_group
+     home: /opt/tomcat/ 
+     state: present
+
+  - name: Creates directory
+    file:
+      path: /opt/tomcat/{{tomcat_version}}.{{tomcat_subversion}}/
+      state: directory
+      recurse: yes
+
+  - name: Download Tomcat
+    get_url: 
+     url: http://archive.apache.org/dist/tomcat/tomcat-{{tomcat_version}}/v{{tomcat_version}}.{{tomcat_subversion}}/bin/apache-tomcat-{{tomcat_version}}.{{tomcat_subversion}}.tar.gz 
+     dest: /home/vagrant/
+
+  - name: Unarchive Tomcat
+    unarchive: 
+     src: /home/vagrant/apache-tomcat-{{tomcat_version}}.{{tomcat_subversion}}.tar.gz 
+     dest: /home/vagrant/
+     remote_src: yes
+     
+  - name : Copy tomcat to /opt/tomcat/$version    
+    shell: cp -R /home/vagrant/apache-tomcat-{{tomcat_version}}.{{tomcat_subversion}}/* /opt/tomcat/{{tomcat_version}}.{{tomcat_subversion}} && chown -R tomcat_as:tomcat_as_group /opt/tomcat/
+  
+  - name: Copy tomcat.service 
+    copy: 
+      src: tomcat.service      
+      dest: /etc/systemd/system/
+
+  - replace: 
+     path: /etc/systemd/system/tomcat.service
+     regexp: '{tomcat_version}'      
+     replace: '{{tomcat_version}}.{{tomcat_subversion}}'
+
+  - service: 
+      name: tomcat
+      enabled: yes
+      state: started
+  
+  - name : Tomcat uptime   
+    shell: systemctl status tomcat | grep active
+  
+
+
+- name: Check Tomcat
+  hosts: tomcat
+
+  tasks:
+
+   - name: Check response status 
+     shell: curl -IL http://127.0.0.1:8080
+
+
+   - name: Tomcat process   
+     shell: ps -ef | grep tomcat
+
+   - uri:
+       url: http://127.0.0.1:8080
+       return_content: yes
+     register: webpage
+
+   - name: Fail if Tomcat is not in the page content
+     fail:
+       msg: 'Fail "Tomcat" is not in the page content'
+     when: "'Tomcat' not in webpage.content"
+   
+   - name : Check Tomcat service
+     shell: systemctl status tomcat 
+
+   - name: check if java has port 8080 open
+     shell: ss -tp state listening sport = :8080 | grep java
+     become: yes
+     
+
+   
+         
+
+  
