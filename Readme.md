@@ -6,6 +6,7 @@
 
 [inventory](inventory)
 
+[tomcat.service](tomcat.service)
 
 
 #  Lab Work Task. Tomcat AS Provisioning
@@ -17,9 +18,9 @@
 
 ## 2. Create folder ~/cm/ansible/day-1. All working files are supposed to be placed right there.
 
-## 3. Spin up clear CentOS6 VM using vagrant (“vagrant init sbeliakou/centos-7.3-minimal”). Verify connectivity to the host using ssh keys (user: vagrant)
+## 3. Spin up clear CentOS7 VM using vagrant ([Vagrantfile](Vagrantfile)). Verify connectivity to the host using ssh keys (user: vagrant)
 
-## 4. Create ansible inventory file (name: inventory) with remote host connection details:
+## 4. Create ansible inventory file (name: [inventory](inventory)) with remote host connection details:
 ### - Remote VM hostname/ip/port
 ### - Remote ssh login username
 ### - Connection type
@@ -39,7 +40,7 @@
 
 <img src="pictures/2.png">
 
-## 6. Develop a playbook (name: tomcat_provision.yml) which is supposed to run against any host (specified in inventory)
+## 6. Develop a playbook (name: [tomcat_provision.yml](tomcat_provision.yml)) which is supposed to run against any host (specified in inventory)
 ### Use following modules (at least):
 #### - copy
 #### - file
